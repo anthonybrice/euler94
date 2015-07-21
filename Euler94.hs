@@ -20,26 +20,29 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
         y' = fromInteger y
         z' = fromInteger z
 
+--duplicateEach = (>>= (replicate 2 >>= (\[x] -> [head x, swap $ last x])))
+
 -- | Returns a list of tuples of all almost equilateral triangles with
 -- integer-valued sides and perimeter less than or equal to @n@. The first
 -- element of the tuple is the length of two sides, and the second element is
 -- the length of the other side.
 allTriangles :: Integer -> [(Integer, Integer)]
 allTriangles n = do
-  let cs (x, y) = abs (x - y) == 1 && 2 * x + y <= n
-  z <- filter cs $ zip [2..n] [1..n]
-  if snd z == 1
-    then return z
-    else [z, swap z]
+  let zs = zip [2..n] [1..n]
+  (head zs) : do
+    z <- tail zs
+    filter (\(x, y) -> 2 * x + y <= n) [z, swap z]
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than @n@.
 euler94 :: Integer -> Integer
 euler94 n = sum $ do
   (x, y) <- allTriangles n
-  if isInteger $ areaT (fromInteger x) (fromInteger x) (fromInteger y)
+  if isInteger $ areaT x x y
     then return $ sum [x, x, y]
     else fail "not an integer-valued area"
+  -- let
+  --return 0
 
 main :: IO ()
 main = do
