@@ -1,4 +1,5 @@
 import           Control.Monad (replicateM)
+import           Data.Tuple    (swap)
 
 infixl 9 #
 (#) :: (a -> b) -> (b -> c) -> a -> c
@@ -24,14 +25,12 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
 -- element of the tuple is the length of two sides, and the second element is
 -- the length of the other side.
 allTriangles :: Integer -> [(Integer, Integer)]
--- allTriangles n = [(x, y) | x <- [2..n]
---                          , y <- [1..n]
---                          , abs (x - y) == 1
---                          , 2 * x + y <= n
---                          ]
-allTriangles n = f
-                 $ filter (\(x, y) -> abs (x - y) == 1 && 2 * x + y <= n)
-                 $ zip [2..n] [1..n]
+allTriangles n = do
+  let cs (x, y) = abs (x - y) == 1 && 2 * x + y <= n
+  z <- filter cs $ zip [2..n] [1..n]
+  if snd z == 1
+    then return z
+    else [z, swap z]
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than @n@.
