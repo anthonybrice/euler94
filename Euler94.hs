@@ -38,7 +38,7 @@ allTriangles n = do
 -- integral side lengths and area whose perimeters are less than or equal to
 -- @n@.
 euler94 :: Integer -> Integer
-euler94 n = foldr (\(x, y) acc -> if isInteger $ areaT x x y
+euler94 n = foldl' (\acc (x, y) -> if isInteger $ areaT x x y
                                   then acc + 2 * x + y
                                   else acc) 0 $ allTriangles n
 
