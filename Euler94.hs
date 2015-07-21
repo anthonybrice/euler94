@@ -15,7 +15,11 @@ areaT x y z = sqrt $ p * (p - x) * (p - y) * (p - z)
 -- length of the shorter sides, and the second element is the length of the
 -- longer side.
 allTriangles :: Integer -> [(Integer, Integer)]
-allTriangles n = [(x, y) | x <- [2..(n-1)], y <- [1..(n-1)], abs (x - y) == 1]
+allTriangles n = [(x, y) | x <- [2..n]
+                         , y <- [1..n]
+                         , abs (x - y) == 1
+                         , 2 * x + y < n
+                         ]
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than @n@.
