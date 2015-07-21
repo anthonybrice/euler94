@@ -1,4 +1,5 @@
 import           Control.Monad (replicateM)
+import           Data.List     (foldl')
 import           Data.Tuple    (swap)
 
 infixl 9 #
@@ -29,20 +30,17 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
 allTriangles :: Integer -> [(Integer, Integer)]
 allTriangles n = do
   let zs = zip [2..n] [1..n]
-  (head zs) : do
-    z <- tail zs
-    filter (\(x, y) -> 2 * x + y <= n) [z, swap z]
+      zs' = head zs : do z <- tail zs
+                         [swap z, z]
+  takeWhile (\(x, y) -> 2 * x + y <= n) zs'
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
--- integral side lengths and area whose perimeters are less than @n@.
+-- integral side lengths and area whose perimeters are less than or equal to
+-- @n@.
 euler94 :: Integer -> Integer
-euler94 n = sum $ do
-  (x, y) <- allTriangles n
-  if isInteger $ areaT x x y
-    then return $ sum [x, x, y]
-    else fail "not an integer-valued area"
-  -- let
-  --return 0
+euler94 n = foldl' (\acc (x, y) -> if isInteger $ areaT x x y
+                                   then acc + 2 * x + y
+                                   else acc) 0 $ allTriangles n
 
 main :: IO ()
 main = do
