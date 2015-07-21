@@ -12,8 +12,8 @@ areaT x y z = sqrt $ p * (p - x) * (p - y) * (p - z)
 
 -- | Returns a list of tuples of all almost equilateral triangles
 -- whose perimeters are less than @n@. The first element of the tuple is the
--- length of the shorter sides, and the second element is the length of the
--- longer side.
+-- length of two sides, and the second element is the length of the
+-- other side.
 allTriangles :: Integer -> [(Integer, Integer)]
 allTriangles n = [(x, y) | x <- [2..n]
                          , y <- [1..n]
