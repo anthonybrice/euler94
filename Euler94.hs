@@ -1,3 +1,5 @@
+--{-# ANN allTriangles "HLint: ignore Redundant flip" #-}
+
 import           Control.Monad (replicateM)
 import           Data.List     (foldl')
 
@@ -31,6 +33,7 @@ allTriangles :: Integer -> [(Integer, Integer)]
 allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
   where zs = (2, 1) : merge (zip [2..n] [3..n]) (zip [3..n] [2..n])
 
+{-# ANN euler94 "HLint: ignore Redundant flip" #-}
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than or equal to
 -- @n@.
