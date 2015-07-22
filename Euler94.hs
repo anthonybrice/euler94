@@ -1,6 +1,5 @@
-import           Control.Monad         (replicateM)
-import           Data.Function.Memoize (memoize)
-import           Data.List             (foldl', transpose)
+import           Control.Monad (replicateM)
+import           Data.List     (foldl', transpose)
 
 infixl 9 #
 (#) :: (a -> b) -> (b -> c) -> a -> c
@@ -41,7 +40,4 @@ euler94 = allTriangles
                                           else acc)
 
 main :: IO ()
-main = do
-  ns <- readLn >>= flip replicateM readLn
-  let euler94' = memoize euler94
-  mapM_ (print . euler94') ns
+main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
