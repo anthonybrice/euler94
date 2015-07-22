@@ -1,6 +1,5 @@
 import           Control.Monad (replicateM)
 import           Data.List     (foldl')
-import           Data.Tuple    (swap)
 
 -- | Returns true if the the given double is integer valued.
 isInteger :: Double -> Bool
@@ -36,6 +35,4 @@ euler94 n = foldl' (\acc (x, y) -> if isInteger $ areaT x x y
                                    else acc) 0 $ allTriangles n
 
 main :: IO ()
-main = do
-  ns <- readLn >>= flip replicateM readLn :: IO [Integer]
-  mapM_ (print . euler94) ns
+main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
