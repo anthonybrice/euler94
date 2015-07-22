@@ -1,6 +1,11 @@
 import           Control.Monad (replicateM)
 import           Data.List     (foldl')
 
+infixl 9 #
+(#) :: (a -> b) -> (b -> c) -> a -> c
+-- ^ convenience infix op for reverse function composition
+(#) = flip (.)
+
 -- | Returns true if the the given double is integer valued.
 isInteger :: Double -> Bool
 isInteger x = x == fromInteger (round x)
@@ -30,9 +35,10 @@ allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
 -- integral side lengths and area whose perimeters are less than or equal to
 -- @n@.
 euler94 :: Integer -> Integer
-euler94 n = foldl' (\acc (x, y) -> if isInteger $ areaT x x y
-                                   then acc + 2 * x + y
-                                   else acc) 0 $ allTriangles n
+euler94 = allTriangles
+          # flip foldl' 0 (\acc (x, y) -> if isInteger $ areaT x x y
+                                          then acc + 2 * x + y
+                                          else acc)
 
 main :: IO ()
 main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
