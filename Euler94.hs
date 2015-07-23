@@ -30,7 +30,6 @@ allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
                                            , zip [3..n] [2..n]
                                            ]
 
-{-# ANN euler94 "HLint: ignore Redundant flip" #-}
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than or equal to
 -- @n@.
@@ -40,7 +39,6 @@ euler94 = allTriangles
                                           then acc + 2 * x + y
                                           else acc)
 
-{-# ANN euler94' "HLint: ignore Redundant flip" #-}
 euler94' :: (Integer, (Integer, Integer))
          -> Integer
          -> (Integer, (Integer, Integer))
@@ -58,22 +56,24 @@ allTriangles' :: (Integer, Integer)
 allTriangles' t@(p, q) n =
   let ts = takeWhile (\(x, y) -> 2 * x + y <= n) zs
       (p', q') = nextT t
-      zs = t : (concat . transpose) [ zip [p..n] [q..n]
-                                    , zip [p'..n] [q'..n]
-                                    ]
+      zs = (concat . transpose) [ zip [p..n] [q..n]
+                                , zip [p'..n] [q'..n]
+                                ]
       nextT (y, z) = if y < z
                      then (z, y)
                      else (y, z+2)
-  in (ts, nextT $ last ts)
+      t' = nextT $ last ts
+  in ts `seq` t' `seq` (ts, t')
 
 mainFold acc n =
-  let (s, nt) = euler94' (last acc) n
-  in acc ++ [(s, nt)]
+  let (s, nt) = euler94' (head acc) n
+  in s `seq` nt `seq` (s, nt) : acc
 
 main :: IO ()
 main = do
   ns <- readLn >>= flip replicateM readLn
   let ns' = sort . nub $ ns
-      vs = tail $ foldl' mainFold [(0, (2,1))] ns'
-  mapM_ (\n -> let i = fromJust $ elemIndex n ns'
-               in print $ fst $ vs!!i) ns
+      vs = reverse . init $! foldl' mainFold [(0, (2,1))] ns'
+      _ = map (`seq` undefined) vs
+  mapM_ (\n -> let i = fromJust $! elemIndex n ns'
+               in print $! fst $! vs!!i) ns
