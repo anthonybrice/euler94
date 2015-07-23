@@ -1,5 +1,6 @@
 import           Control.Monad (replicateM)
-import           Data.List     (foldl', transpose)
+import           Data.List     (elemIndex, foldl', nub, sort, transpose)
+import           Data.Maybe    (fromJust)
 
 infixl 9 #
 (#) :: (a -> b) -> (b -> c) -> a -> c
@@ -39,5 +40,40 @@ euler94 = allTriangles
                                           then acc + 2 * x + y
                                           else acc)
 
+{-# ANN euler94' "HLint: ignore Redundant flip" #-}
+euler94' :: (Integer, (Integer, Integer))
+         -> Integer
+         -> (Integer, (Integer, Integer))
+euler94' (p, t) n =
+  let (ts, nt) = allTriangles' t n
+      s = flip foldl' p (\acc (x, y) -> if isInteger $ areaT x x y
+                                        then acc + 2 * x + y
+                                        else acc) ts
+  in (s, nt)
+
+
+allTriangles' :: (Integer, Integer)
+              -> Integer
+              -> ([(Integer, Integer)], (Integer, Integer))
+allTriangles' t@(p, q) n =
+  let ts = takeWhile (\(x, y) -> 2 * x + y <= n) zs
+      (p', q') = nextT t
+      zs = t : (concat . transpose) [ zip [p..n] [q..n]
+                                    , zip [p'..n] [q'..n]
+                                    ]
+      nextT (y, z) = if y < z
+                     then (z, y)
+                     else (y, z+2)
+  in (ts, nextT $ last ts)
+
+mainFold acc n =
+  let (s, nt) = euler94' (last acc) n
+  in acc ++ [(s, nt)]
+
 main :: IO ()
-main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
+main = do
+  ns <- readLn >>= flip replicateM readLn
+  let ns' = sort . nub $ ns
+      vs = tail $ foldl' mainFold [(0, (2,1))] ns'
+  mapM_ (\n -> let i = fromJust $ elemIndex n ns'
+               in print $ fst $ vs!!i) ns
