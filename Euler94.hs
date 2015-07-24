@@ -27,21 +27,22 @@ allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than or equal to
 -- @n@.
-euler94'' :: Integer -> Integer
-euler94'' n = sum $ map (\(x, y) -> x + x + y) $ filter intArea $ allTriangles n
+euler94 :: Integer -> Integer
+euler94 n = sum $ filter intArea' $ perimeters n
 
 perimeters :: Integer -> [Integer]
 perimeters n = filter (\x -> x `rem` 3 /= 0) [16..n]
 
-intArea :: (Integer, Integer) -> Bool
-intArea t@(x, y) =
-  --let t@(x, y) = triangle p
-  isInteger $ areaT x x y
+-- intArea :: (Integer, Integer) -> Bool
+-- intArea t@(x, y) = isInteger $ areaT x x y
 
-triangle p =
-  let x = div p 3
-      y = x + 1
-  in if even p then (x, y) else (y, x)
+intArea' :: Integer -> Bool
+intArea' p =
+  let (q, r) = quotRem p 3
+      (x, y) = if r == 1
+                 then (q, q+1)
+                 else (q+1, q)
+      in isInteger $ areaT x x y
 
 main :: IO ()
-main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94'')
+main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
