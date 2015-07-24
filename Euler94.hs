@@ -15,28 +15,21 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
         y' = fromInteger y
         z' = fromInteger z
 
--- | Returns a list of tuples of all almost equilateral triangles with
--- integer-valued sides and perimeter less than or equal to @n@. The first
--- element of the tuple gives the length of either similar side, and the second
--- element gives the length of the other side.
-allTriangles :: Integer -> [(Integer, Integer)]
-allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
-  where zs = (concat . transpose) [ zip [5..n] [6..n]
-                                  , zip [6..n] [5..n]
-                                  ]
---
--- | Returns the sum of the perimeters of all almost equilateral triangles with
--- integral side lengths and area whose perimeters are less than or equal to
--- @n@.
-euler94 :: Integer -> Integer
-euler94 n = sum $ map (\(x, y) -> 2 * x + y) $ filter intArea $ allTriangles n
-
+-- | Returns true if the given triangle has integer-valued area.
 intArea :: (Integer, Integer) -> Bool
 intArea (x, y) = isInteger $ areaT x x y
 
+-- | Returns the sum of the perimeters of all almost equilateral triangles with
+-- integral side lengths and area between the triangles given by @m@ and @n@
+-- (inclusive).
 euler94' :: Integer -> Integer -> Integer
-euler94' m n = sum $ map (\(x, y) -> 2 * x + y) $ filter intArea $ allTriangles' m n
+euler94' m n = sum . map (\(x, y) -> 2 * x + y) . filter intArea
+               $ allTriangles' m n
 
+-- | Returns a list of tuples of all almost equilateral triangles with
+-- integer-valued sides between the triangles given by @m@ and @n@. The first
+-- element of the tuple gives the length of either similar side, and the second
+-- element gives the length of the other side.
 allTriangles' :: Integer -> Integer -> [(Integer, Integer)]
 allTriangles' m n = takeWhile (\(p, q) -> 2 * p + q <= n) zs
   where (x, y) = triangle m
@@ -45,15 +38,19 @@ allTriangles' m n = takeWhile (\(p, q) -> 2 * p + q <= n) zs
                                   , zip [x'..n] [y'..n]
                                   ]
 
+-- | Returns the almost equilateral triangle given by the perimeter @p@.
+triangle :: Integer -> (Integer, Integer)
 triangle p = let (q, r) = quotRem p 3
              in if r == 1 then (q, q+1) else (q+1, q)
 
+-- | Returns the next almost equilateral triangle after the given one.
+nextT :: (Integer, Integer) -> (Integer, Integer)
 nextT (x, y) = if x < y then (y, x) else (x, y+2)
 
+-- | A binary operator for the fold in 'main'.
 mainFold :: [(Integer, Integer)] -> Integer -> [(Integer, Integer)]
-mainFold acc n =
-  let s = euler94' ((fst $ head acc) + 1) n
-  in (n, s + (snd $ head acc)) : acc
+mainFold acc n = (n, s + snd (head acc)) : acc
+  where s = euler94' (fst (head acc) + 1) n
 
 main :: IO ()
 main = do
