@@ -1,5 +1,6 @@
 import           Control.Monad (replicateM)
-import           Data.List     (transpose)
+import           Data.List     (foldl', nub, sort, transpose)
+import           Data.Map      (fromList, (!))
 
 -- | Returns true if the the given double is integer valued.
 isInteger :: Double -> Bool
@@ -30,19 +31,33 @@ allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
 euler94 :: Integer -> Integer
 euler94 n = sum $ map (\(x, y) -> 2 * x + y) $ filter intArea $ allTriangles n
 
-perimeters :: Integer -> [Integer]
-perimeters n = filter (\x -> x `rem` 3 /= 0) [16..n]
-
 intArea :: (Integer, Integer) -> Bool
 intArea (x, y) = isInteger $ areaT x x y
 
-intArea' :: Integer -> Bool
-intArea' p =
-  let (q, r) = quotRem p 3
-      (x, y) = if r == 1
-               then (q, q+1)
-               else (q+1, q)
-      in isInteger $ areaT x x y
+euler94' :: Integer -> Integer -> Integer
+euler94' m n = sum $ map (\(x, y) -> 2 * x + y) $ filter intArea $ allTriangles' m n
+
+allTriangles' :: Integer -> Integer -> [(Integer, Integer)]
+allTriangles' m n = takeWhile (\(p, q) -> 2 * p + q <= n) zs
+  where (x, y) = triangle m
+        (x', y') = nextT (x, y)
+        zs = (concat . transpose) [ zip [x..n] [y..n]
+                                  , zip [x'..n] [y'..n]
+                                  ]
+
+triangle p = let (q, r) = quotRem p 3
+             in if r == 1 then (q, q+1) else (q+1, q)
+
+nextT (x, y) = if x < y then (y, x) else (x, y+2)
+
+mainFold :: [(Integer, Integer)] -> Integer -> [(Integer, Integer)]
+mainFold acc n =
+  let s = euler94' ((fst $ head acc) + 1) n
+  in (n, s + (snd $ head acc)) : acc
 
 main :: IO ()
-main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94)
+main = do
+  ns <- readLn >>= flip replicateM readLn
+  let ns' = sort . nub $ ns
+      vs = fromList $ init $ foldl' mainFold [(15, 0)] ns'
+  mapM_ (\n -> print $ vs!n) ns
