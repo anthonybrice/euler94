@@ -1,3 +1,5 @@
+module Brice.Euler (euler94) where
+
 import           Control.Monad (replicateM)
 import           Data.List     (foldl', nub, sort, transpose)
 import           Data.Map      (fromList, (!))
@@ -10,7 +12,7 @@ isInteger x = x == fromInteger (round x)
 -- validate that the given lengths can actually form a triangle.
 areaT :: Integer -> Integer -> Integer -> Double
 areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
-  where p = (x' + y' + z') / 2 :: Rational
+  where p  = (x' + y' + z') / 2 :: Rational
         x' = fromInteger x
         y' = fromInteger y
         z' = fromInteger z
@@ -18,6 +20,12 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
 -- | Returns true if the given triangle has integer-valued area.
 intArea :: (Integer, Integer) -> Bool
 intArea (x, y) = isInteger $ areaT x x y
+
+-- | 'euler94' is the sum of the perimeters of all almost equilateral triangles
+-- with integral side lengths and area and whose perimeters do not exceed the
+-- argument.
+euler94 :: Integer -> Integer
+euler94 = euler94' 16
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area between the triangles given by @m@ and @n@
@@ -32,16 +40,16 @@ euler94' m n = sum . map (\(x, y) -> 2 * x + y) . filter intArea
 -- element gives the length of the other side.
 allTriangles' :: Integer -> Integer -> [(Integer, Integer)]
 allTriangles' m n = takeWhile (\(p, q) -> 2 * p + q <= n) zs
-  where (x, y) = triangle m
+  where (x, y)   = triangle m
         (x', y') = nextT (x, y)
-        zs = (concat . transpose) [ zip [x..n] [y..n]
-                                  , zip [x'..n] [y'..n]
-                                  ]
+        zs       = (concat . transpose) [ zip [x..n] [y..n]
+                                        , zip [x'..n] [y'..n]
+                                        ]
 
 -- | Returns the almost equilateral triangle given by the perimeter @p@.
 triangle :: Integer -> (Integer, Integer)
-triangle p = let (q, r) = quotRem p 3
-             in if r == 1 then (q, q+1) else (q+1, q)
+triangle p = if r == 1 then (q, q+1) else (q+1, q)
+  where (q, r) = quotRem p 3
 
 -- | Returns the next almost equilateral triangle after the given one.
 nextT :: (Integer, Integer) -> (Integer, Integer)
@@ -56,5 +64,5 @@ main :: IO ()
 main = do
   ns <- readLn >>= flip replicateM readLn
   let ns' = sort . nub $ ns
-      vs = fromList $ init $ foldl' mainFold [(15, 0)] ns'
+      vs  = fromList . init $ foldl' mainFold [(15, 0)] ns'
   mapM_ (\n -> print $ vs!n) ns
