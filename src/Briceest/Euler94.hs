@@ -1,3 +1,4 @@
+-- src/Briceest/Euler94.hs
 import Data.List (foldl')
 
 isInteger :: Float -> Bool
