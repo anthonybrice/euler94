@@ -26,9 +26,9 @@ areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
 -- element gives the length of the other side.
 allTriangles :: Integer -> [(Integer, Integer)]
 allTriangles n = takeWhile (\(x, y) -> 2 * x + y <= n) zs
-  where zs = (2, 1) : (concat . transpose) [ zip [2..n] [3..n]
-                                           , zip [3..n] [2..n]
-                                           ]
+  where zs = (concat . transpose) [ zip [5..n] [6..n]
+                                  , zip [6..n] [5..n]
+                                  ]
 
 -- | Returns the sum of the perimeters of all almost equilateral triangles with
 -- integral side lengths and area whose perimeters are less than or equal to
@@ -69,11 +69,27 @@ mainFold acc n =
   let (s, nt) = euler94' (head acc) n
   in s `seq` nt `seq` (s, nt) : acc
 
+euler94'' :: Integer -> Integer
+euler94'' n = sum $ map (\(x, y) -> x + x + y) $ filter intArea $ allTriangles n
+
+perimeters :: Integer -> [Integer]
+perimeters n = filter (\x -> x `rem` 3 /= 0) [16..n]
+
+intArea :: (Integer, Integer) -> Bool
+intArea t@(x, y) =
+  --let t@(x, y) = triangle p
+  isInteger $ areaT x x y
+
+triangle p =
+  let x = div p 3
+      y = x + 1
+  in if even p then (x, y) else (y, x)
+
 main :: IO ()
-main = do
-  ns <- readLn >>= flip replicateM readLn
-  let ns' = sort . nub $ ns
-      vs = reverse . init $! foldl' mainFold [(0, (2,1))] ns'
-      _ = map (`seq` undefined) vs
-  mapM_ (\n -> let i = fromJust $! elemIndex n ns'
-               in print $! fst $! vs!!i) ns
+main = readLn >>= flip replicateM readLn >>= mapM_ (print . euler94'')
+  -- ns <- readLn >>= flip replicateM readLn
+  -- let ns' = sort . nub $ ns
+  --     vs = reverse . init $! foldl' mainFold [(0, (2,1))] ns'
+  --     _ = map (`seq` undefined) vs
+  -- mapM_ (\n -> let i = fromJust $! elemIndex n ns'
+  --              in print $! fst $! vs!!i) ns
