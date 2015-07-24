@@ -1,8 +1,8 @@
-module Brice.Euler (euler94) where
+module Brice.Euler94 (euler94) where
 
 import           Control.Monad (replicateM)
 import           Data.List     (foldl', nub, sort, transpose)
-import           Data.Map      (fromList, (!))
+import           Data.Map      (Map, fromList, (!))
 
 -- | Returns true if the the given double is integer valued.
 isInteger :: Double -> Bool
@@ -57,12 +57,15 @@ nextT (x, y) = if x < y then (y, x) else (x, y+2)
 
 -- | A binary operator for the fold in 'main'.
 mainFold :: [(Integer, Integer)] -> Integer -> [(Integer, Integer)]
+mainFold [] n = init $ mainFold [(15, 0)] n
 mainFold acc n = (n, s + snd (head acc)) : acc
   where s = euler94' (fst (head acc) + 1) n
+
+mapNs :: [Integer] -> Map Integer Integer
+mapNs = fromList . foldl' mainFold [(15, 0)] . sort . nub
 
 main :: IO ()
 main = do
   ns <- readLn >>= flip replicateM readLn
-  let ns' = sort . nub $ ns
-      vs  = fromList . init $ foldl' mainFold [(15, 0)] ns'
+  let vs = mapNs ns
   mapM_ (\n -> print $ vs!n) ns

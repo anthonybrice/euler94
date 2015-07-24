@@ -7,7 +7,7 @@ version:             0.1.0.0
 -- description:
 license:             GPL-3
 license-file:        LICENSE
-author:              Anthony Brice
+author:              Anthony Brice & Daniel Brice
 maintainer:          anthonybrice@lateachiever.com
 -- copyright:
 -- category:
@@ -15,11 +15,10 @@ build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
-executable euler94
-  main-is:             Euler94.hs
+library
+  exposed-modules:     Brice.Euler94
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.8 && <4.9
-                     , containers >= 0.5.6.2@conta_47ajk3tbda43DFWyeF3oHQ
-  -- hs-source-dirs:
+  build-depends:       base >=4.8 && <4.9, containers >=0.5 && <0.6
+  hs-source-dirs:      src
   default-language:    Haskell2010

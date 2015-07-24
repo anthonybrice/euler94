@@ -14,5 +14,3 @@ cabal.sandbox.config
 *.prof
 *.aux
 *.hp
-
-Euler94
