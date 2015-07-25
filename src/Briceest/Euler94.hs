@@ -1,5 +1,8 @@
 -- src/Briceest/Euler94.hs
-import Data.List (foldl')
+
+module Briceest.Euler94 (euler94) where
+
+import           Data.List (foldl')
 
 isInteger :: Float -> Bool
 isInteger x = x == (fromIntegral . round $ x)
