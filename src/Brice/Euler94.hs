@@ -17,7 +17,7 @@ euler94' m n = sum . map (\(x, y) -> 2 * x + y) . filter intArea
 
 -- | Returns true if the given triangle has integer-valued area.
 intArea :: Integral a => (a, a) -> Bool
-intArea (x, y) = isInteger $ areaT x x y
+intArea (x, y) = isInteger $ area x y
 
 -- | Returns true if the the given double is integer valued.
 isInteger :: Double-> Bool
@@ -25,12 +25,12 @@ isInteger x = x == fromInteger (round x)
 
 -- | Returns the area of the triangle formed by the given side lengths. Does not
 -- validate that the given lengths can actually form a triangle.
-areaT :: Integral a => a -> a -> a -> Double
-areaT x y z = sqrt $ fromRational $ p * (p - x') * (p - y') * (p - z')
-  where p  = (x' + y' + z') / 2 :: Rational
-        x' = fromIntegral x
-        y' = fromIntegral y
-        z' = fromIntegral z
+area :: Integral a => a -> a -> Double
+area x y = y' * sqrt ((x' - y') * (x' + y'))
+  where
+    x' = fromIntegral x
+    y' = fromIntegral y / 2
+
 
 -- | Returns a list of tuples of all almost equilateral triangles with
 -- integer-valued sides between the triangles given by @m@ and @n@. The first
