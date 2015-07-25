@@ -1,13 +1,14 @@
 -- src/Briceest/Euler94.hs
 
-module Briceest.Euler94 (euler94) where
+--module Briceest.Euler94 (euler94) where
 
-import           Data.List (foldl')
+import           Data.List          (foldl')
+import           System.Environment (getArgs)
 
-isInteger :: Float -> Bool
+isInteger :: Double -> Bool
 isInteger x = x == (fromIntegral . round $ x)
 
-area :: Integer -> Integer -> Float
+area :: Integer -> Integer -> Double
 area x y = y' * sqrt ((x' - y') * (x' + y'))
   where
     x' = fromIntegral x
@@ -31,3 +32,10 @@ euler94 :: (Integer, Integer) -- prior ending, prior sum
 euler94 (pend, psum) nend =
     (nend, foldl' folder psum [(pend + 1)..nend])
 -- invoke as `euler94 (4, 0) n` to run from 5 to n
+
+main :: IO ()
+main = do
+  (x':_) <- getArgs
+  let x = read x' :: Integer
+      y = euler94 (4, 0) x
+  print y
