@@ -1,17 +1,8 @@
 -- src/Briceest/Euler94.hs
-
-module Briceest.Euler94 (euler94) where
-
 import           Data.List (foldl')
 
-isInteger :: Float -> Bool
-isInteger x = x == (fromIntegral . round $ x)
-
-area :: Integer -> Integer -> Float
-area x y = y' * sqrt ((x' - y') * (x' + y'))
-  where
-    x' = fromIntegral x
-    y' = fromIntegral y / 2
+isSquare :: Integer -> Bool
+isSquare undefined
 
 folder :: Integer -> Integer -> Integer
 folder acc n =
