@@ -2,7 +2,7 @@
 import           Data.List (foldl')
 
 isSquare :: Integer -> Bool
-isSquare undefined
+isSquare = undefined
 
 folder :: Integer -> Integer -> Integer
 folder acc n =
