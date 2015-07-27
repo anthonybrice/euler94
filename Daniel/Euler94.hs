@@ -1,9 +1,6 @@
+isSquare' :: Integer -> Bool
+isSquare' = undefined
 
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 folder :: Integer -> Integer -> Integer
 folder acc n =
     let (q, r) = quotRem n 3
@@ -12,12 +9,12 @@ folder acc n =
         1 -> let (k, s) = quotRem q 2
              in case s of
                 0 -> acc
-                1 -> if isSquare $ k * (3 * k + 2)
+                1 -> if isSquare' $ k * (3 * k + 2)
                      then acc + n
                      else acc
         2 -> let (k, s) = quotRem q 2
              in case s of
-                0 -> if isSquare $ (3 * k + 1) * (k + 1)
+                0 -> if isSquare' $ (3 * k + 1) * (k + 1)
                      then acc + n
                      else acc
                 1 -> acc
