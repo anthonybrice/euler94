@@ -14,16 +14,22 @@ area x y = y' * sqrt ((x' - y') * (x' + y'))
     y' = fromIntegral y / 2
 
 folder :: Integer -> Integer -> Integer
-folder acc k =
-    let (q, r) = quotRem k 3
+folder acc n =
+    let (q, r) = quotRem n 3
     in case r of
         0 -> acc
-        1 -> if isInteger $ area q (q + 1)
-             then acc + k
-             else acc
-        2 -> if isInteger $ area (q + 1) q
-             then acc + k
-             else acc
+        1 -> let (k, s) = quotRem q 2
+             in case s of
+                0 -> acc
+                1 -> if isSquare $ k * (3 * k + 2)
+                     then acc + n
+                     else acc
+        2 -> let (k, s) = quotRem q 2
+             in case s of
+                0 -> if isSquare $ (3 * k + 1) * (k + 1)
+                     then acc + n
+                     else acc
+                1 -> acc
 
 euler94 :: (Integer, Integer) -- prior ending, prior sum
         -> Integer            -- new ending
