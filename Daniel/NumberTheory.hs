@@ -300,9 +300,6 @@ leadingZeros =
     in case mkArr realWorld# of
         b -> BA b
 
-#endif
-
-
 -- Math.NumberTheory.Powers.Squares
 
 -- | Calculate the integer square root of a nonnegative number @n@,
@@ -548,4 +545,3 @@ isqrtWord n
     | otherwise = r
       where
         !r = (fromIntegral :: Int -> Word) . (truncate :: Double -> Int) . sqrt $ fromIntegral n
-z
