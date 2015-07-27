@@ -1,3 +1,5 @@
+import Data.List (foldl')
+
 isSquare' :: Integer -> Bool
 isSquare' = undefined
 
